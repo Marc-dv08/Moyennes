@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur de Moyenne | Johan</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6755e8;
+    --secondary: #9d55ec;
+    --dark: #17152d;
+    --light: #f5f4ff;
+    --green: #16b889;
+    --red: #ff5573;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f3ff;
+    color: var(--dark);
+    overflow-x: hidden;
+}
+
+/* FOND ANIMÉ */
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: float 9s infinite alternate ease-in-out;
+}
+
+.circle.one {
+    width: 350px;
+    height: 350px;
+    background: #d8ceff;
+    top: -100px;
+    left: -100px;
+}
+
+.circle.two {
+    width: 300px;
+    height: 300px;
+    background: #e7caff;
+    bottom: -80px;
+    right: -80px;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(40px,50px) scale(1.15); }
+}
+
+/* CONTENEUR */
+
+.container {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 20px;
+}
+
+/* HEADER */
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: appear .8s ease;
+}
+
+.avatar {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    border: 5px solid white;
+    background: linear-gradient(135deg,#6755e8,#bd63f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    overflow: hidden;
+    box-shadow: 0 8px 30px #6755e855;
+    cursor: pointer;
+    transition: .4s;
+}
+
+.avatar:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.avatar span {
+    font-size: 38px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 30px;
+    font-weight: 800;
+    margin-top: 15px;
+    background: linear-gradient(90deg,#6755e8,#bd55df);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.header p {
+    color: #77738d;
+    font-size: 14px;
+}
+
+.photo-info {
+    font-size: 11px;
+    color: #999;
+    margin-top: 8px;
+}
+
+/* CARTES */
+
+.card {
+    background: rgba(255,255,255,.9);
+    border-radius: 22px;
+    padding: 25px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 30px rgba(70,50,140,.07);
+    border: 1px solid rgba(255,255,255,.9);
+    animation: appear .7s ease;
+    transition: .3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(70,50,140,.12);
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.icon {
+    width: 43px;
+    height: 43px;
+    background: #eeeaff;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+.card-title h2 {
+    font-size: 18px;
+}
+
+/* INPUTS */
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+input, select {
+    width: 100%;
+    padding: 13px;
+    border: 2px solid #eeecf7;
+    border-radius: 12px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fafaff;
+    transition: .3s;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px #6755e817;
+}
+
+.field {
+    margin-bottom: 17px;
+}
+
+.assessment {
+    background: #faf9ff;
+    border: 1px solid #ece9fa;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    animation: slideIn .35s ease;
+}
+
+.assessment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.assessment-header strong {
+    font-size: 13px;
+}
+
+.assessment-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+
+.remove {
+    background: #ffe8ed;
+    color: #ed4261;
+    border: none;
+    border-radius: 9px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.remove:hover {
+    background: #ff5573;
+    color: white;
+}
+
+/* BOUTONS */
+
+button {
+    font-family: inherit;
+    transition: .3s;
+}
+
+.add-btn {
+    width: 100%;
+    background: #f0edff;
+    color: var(--primary);
+    border: 1px dashed #9d8ded;
+    padding: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.02);
+}
+
+/* ASSIDUITÉ */
+
+.attendance {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.choice {
+    padding: 16px;
+    border: 2px solid #eeecf7;
+    border-radius: 13px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.choice input {
+    display: none;
+}
+
+.choice.selected {
+    border-color: var(--green);
+    background: #e8fff6;
+    color: #078b67;
+}
+
+.choice.missed.selected {
+    border-color: var(--red);
+    background: #fff0f3;
+    color: #d63e5d;
+}
+
+/* CALCUL */
+
+.calculate {
+    width: 100%;
+    margin-top: 20px;
+    padding: 17px;
+    background: linear-gradient(100deg,#6755e8,#a04ee9);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px #6755e844;
+}
+
+.calculate:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px #6755e866;
+}
+
+.calculate:active {
+    transform: scale(.97);
+}
+
+/* RESULTAT */
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 20px;
+    background: linear-gradient(135deg,#211b50,#5142aa);
+    color: white;
+    text-align: center;
+    animation: resultAppear .7s ease;
+}
+
+.result h2 {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.average {
+    font-size: 55px;
+    font-weight: 800;
+    margin: 12px 0;
+    color: #a9ffdf;
+}
+
+.result-details {
+    background: #ffffff15;
+    border-radius: 14px;
+    padding: 15px;
+    text-align: left;
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 2.2;
+}
+
+.mention {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 17px;
+}
+
+.reset {
+    margin-top: 20px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    color: #5142aa;
+    background: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    margin: 35px 0 10px;
+    color: #85819e;
+    font-size: 12px;
+}
+
+footer strong {
+    color: var(--primary);
+    font-size: 14px;
+}
+
+@keyframes appear {
+    from {opacity: 0; transform: translateY(25px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideIn {
+    from {opacity: 0; transform: translateX(-15px);}
+    to {opacity: 1; transform: translateX(0);}
+}
+
+@keyframes resultAppear {
+    from {opacity: 0; transform: scale(.9);}
+    to {opacity: 1; transform: scale(1);}
+}
+
+@media(max-width:550px) {
+    .container {
+        margin: 10px auto;
+        padding: 12px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .assessment-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .attendance {
+        grid-template-columns: 1fr;
+    }
+
+    .average {
+        font-size: 45px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background">
+    <div class="circle one"></div>
+    <div class="circle two"></div>
+</div>
+
+<div class="container">
+
+    <header class="header">
+
+        <label class="avatar" for="photo">
+            <img id="profileImage" alt="Photo de profil">
+            <span id="avatarIcon">📸</span>
+        </label>
+
+        <input type="file" id="photo" accept="image/*" hidden>
+
+        <h1>CALCULATEUR DE MOYENNE</h1>
+        <p>L'excellence commence par le suivi de ses performances.</p>
+        <p class="photo-info">Clique sur le cercle pour ajouter ta photo ou ton logo.</p>
+
+    </header>
+
+
+    <!-- INFORMATIONS -->
+
+    <div class="card">
+
+        <div class="card-title">
+            <div class="icon">👨‍🎓</div>
+            <h2>Informations de l'étudiant</h2>
+        </div>
+
+        <div class="field">
+            <label>Nom et prénom</label>
+            <input type="text" id="nom" placeholder="Ex : Jean Kouassi">
+        </div>
+
+    </div>
+
+
+    <!-- DEVOIRS -->
+
+    <div class="card">
+
+        <div class="card-title">
+            <div class="icon">📝</div>
+            <h2>Les devoirs</h2>
+        </div>
+
+        <div id="devoirs">
+
+            <div class="assessment">
+
+                <div class="assessment-header">
+                    <strong>Devoir 1</strong>
+                </div>
+
+                <div class="assessment-grid">
+
+                    <div>
+                        <label>Note /20</label>
+                        <input type="number" class="note"
+                        min="0" max="20" step="0.01"
+                        placeholder="Ex : 15">
+                    </div>
+
+                    <div>
+                        <label>Coefficient</label>
+                        <input type="number" class="coef"
+                        min="0.01" step="0.01" value="3">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button class="add-btn" onclick="ajouter('devoirs','Devoir')">
+            + Ajouter un devoir
+        </button>
+
+    </div>
+
+
+    <!-- INTERROGATIONS -->
+
+    <div class="card">
+
+        <div class="card-title">
+            <div class="icon">📚</div>
+            <h2>Les interrogations</h2>
+        </div>
+
+        <div id="interros">
+
+            <div class="assessment">
+
+                <div class="assessment-header">
+                    <strong>Interrogation 1</strong>
+                </div>
+
+                <div class="assessment-grid">
+
+                    <div>
+                        <label>Note /20</label>
+                        <input type="number" class="note"
+                        min="0" max="20" step="0.01"
+                        placeholder="Ex : 14">
+                    </div>
+
+                    <div>
+                        <label>Coefficient</label>
+                        <input type="number" class="coef"
+                        min="0.01" step="0.01" value="1">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button class="add-btn" onclick="ajouter('interros','Interrogation')">
+            + Ajouter une interrogation
+        </button>
+
+    </div>
+
+
+    <!-- ASSIDUITE -->
+
+    <div class="card">
+
+        <div class="card-title">
+            <div class="icon">🏆</div>
+            <h2>Assiduité de l'étudiant</h2>
+        </div>
+
+        <p style="font-size:13px;margin-bottom:15px;color:#777;">
+            L'étudiant a-t-il participé à toutes les évaluations ?
+        </p>
+
+        <div class="attendance">
+
+            <label class="choice selected" id="yesChoice">
+                <input type="radio" name="absence" value="non" checked>
+                ✅ Aucune absence
+                <br>+1 point
+            </label>
+
+            <label class="choice missed" id="noChoice">
+                <input type="radio" name="absence" value="oui">
+                ❌ Au moins une absence
+                <br>Pas de bonus
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- CALCUL -->
+
+    <button class="calculate" onclick="calculer()">
+        ✨ CALCULER MA MOYENNE
+    </button>
+
+
+    <!-- RESULTAT -->
+
+    <div class="result" id="resultat">
+
+        <h2>MOYENNE FINALE DE L'ÉTUDIANT</h2>
+
+        <div class="average" id="moyenne">00.00</div>
+
+        <p id="nomResultat"></p>
+
+        <div class="result-details">
+
+            <div>Moyenne pondérée : <strong id="brute"></strong></div>
+
+            <div>Bonus d'assiduité : <strong id="bonus"></strong></div>
+
+            <div>Coefficient total : <strong id="totalCoef"></strong></div>
+
+        </div>
+
+        <div class="mention" id="mention"></div>
+
+        <button class="reset" onclick="reinitialiser()">
+            ↻ Nouveau calcul
+        </button>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>Un outil conçu pour faciliter le suivi scolaire.</p>
+
+        <br>
+
+        <strong>Développé par Johan N'Guessan</strong>
+
+        <p>IGL2 | 056127870</p>
+
+        <p style="margin-top:8px;">© 2026 - Tous droits réservés</p>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+// PHOTO DE PROFIL
+
+document.getElementById("photo").addEventListener("change", function(e) {
+
+    const file = e.target.files[0];
+
+    if (file) {
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+
+            const img = document.getElementById("profileImage");
+
+            img.src = event.target.result;
+            img.style.display = "block";
+
+            document.getElementById("avatarIcon").style.display = "none";
+
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+});
+
+
+// GESTION DES CHOIX D'ASSIDUITE
+
+document.querySelectorAll('input[name="absence"]').forEach(input => {
+
+    input.addEventListener("change", function() {
+
+        document.getElementById("yesChoice").classList.remove("selected");
+        document.getElementById("noChoice").classList.remove("selected");
+
+        if(this.value === "non") {
+            document.getElementById("yesChoice").classList.add("selected");
+        } else {
+            document.getElementById("noChoice").classList.add("selected");
+        }
+
+    });
+
+});
+
+
+// AJOUT DES EVALUATIONS
+
+function ajouter(zoneId, type) {
+
+    const zone = document.getElementById(zoneId);
+
+    const nombre = zone.querySelectorAll(".assessment").length + 1;
+
+    const coefficient = type === "Devoir" ? 3 : 1;
+
+    const div = document.createElement("div");
+
+    div.className = "assessment";
+
+    div.innerHTML = `
+
+        <div class="assessment-header">
+
+            <strong>${type} ${nombre}</strong>
+
+            <button class="remove" onclick="supprimer(this)">
+                ✕ Supprimer
+            </button>
+
+        </div>
+
+        <div class="assessment-grid">
+
+            <div>
+                <label>Note /20</label>
+
+                <input type="number" class="note"
+                min="0" max="20" step="0.01"
+                placeholder="Entrer la note">
+            </div>
+
+            <div>
+                <label>Coefficient</label>
+
+                <input type="number" class="coef"
+                min="0.01" step="0.01"
+                value="${coefficient}">
+            </div>
+
+        </div>
+
+    `;
+
+    zone.appendChild(div);
+
+    div.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// SUPPRESSION
+
+function supprimer(button) {
+
+    button.closest(".assessment").remove();
+
+}
+
+
+// CALCUL DE MOYENNE
+
+function calculer() {
+
+    const devoirs = document.querySelectorAll("#devoirs .assessment");
+
+    const interros = document.querySelectorAll("#interros .assessment");
+
+    const evaluations = [...devoirs, ...interros];
+
+    if(evaluations.length === 0) {
+        alert("Ajoutez au moins une évaluation.");
+        return;
+    }
+
+    let somme = 0;
+    let totalCoef = 0;
+
+    for(let evaluation of evaluations) {
+
+        const note = evaluation.querySelector(".note").value;
+
+        const coef = evaluation.querySelector(".coef").value;
+
+        if(note === "" || coef === "") {
+            alert("Veuillez remplir toutes les notes et tous les coefficients.");
+            return;
+        }
+
+        const n = Number(note);
+        const c = Number(coef);
+
+        if(!Number.isFinite(n) || n < 0 || n > 20) {
+            alert("Les notes doivent être comprises entre 0 et 20.");
+            return;
+        }
+
+        if(!Number.isFinite(c) || c <= 0) {
+            alert("Les coefficients doivent être supérieurs à zéro.");
+            return;
+        }
+
+        somme += n * c;
+        totalCoef += c;
+
+    }
+
+    if(totalCoef === 0) {
+        alert("Le total des coefficients est nul.");
+        return;
+    }
+
+    // MOYENNE PONDEREE
+
+    const moyenneBrute = somme / totalCoef;
+
+    // BONUS D'ASSIDUITE
+
+    const absence = document.querySelector(
+        'input[name="absence"]:checked'
+    ).value;
+
+    const bonus = absence === "non" ? 1 : 0;
+
+    // MOYENNE FINALE PLAFONNEE A 20
+
+    const moyenneFinale = Math.min(20, moyenneBrute + bonus);
+
+    // AFFICHAGE
+
+    document.getElementById("moyenne").textContent =
+        moyenneFinale.toFixed(2) + " /20";
+
+    document.getElementById("brute").textContent =
+        moyenneBrute.toFixed(2) + " /20";
+
+    document.getElementById("bonus").textContent =
+        "+" + bonus + " point(s)";
+
+    document.getElementById("totalCoef").textContent =
+        totalCoef.toFixed(2);
+
+    const nom = document.getElementById("nom").value.trim();
+
+    document.getElementById("nomResultat").textContent =
+        nom ? "Étudiant : " + nom : "Résultat de l'étudiant";
+
+    let mention = "";
+
+    if(moyenneFinale >= 16) {
+        mention = "🏆 Excellent travail !";
+    }
+
+    else if(moyenneFinale >= 14) {
+        mention = "🌟 Très bien !";
+    }
+
+    else if(moyenneFinale >= 12) {
+        mention = "👏 Bien !";
+    }
+
+    else if(moyenneFinale >= 10) {
+        mention = "✅ Moyenne atteinte !";
+    }
+
+    else {
+        mention = "💪 Courage, il faut progresser !";
+    }
+
+    document.getElementById("mention").textContent = mention;
+
+    const resultat = document.getElementById("resultat");
+
+    resultat.style.display = "block";
+
+    resultat.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// REINITIALISATION
+
+function reinitialiser() {
+
+    document.getElementById("nom").value = "";
+
+    document.getElementById("devoirs").innerHTML = "";
+
+    document.getElementById("interros").innerHTML = "";
+
+    document.querySelector('input[name="absence"][value="non"]').checked = true;
+
+    document.getElementById("yesChoice").classList.add("selected");
+
+    document.getElementById("noChoice").classList.remove("selected");
+
+    ajouter("devoirs","Devoir");
+    ajouter("interros","Interrogation");
+
+    // Restaurer les coefficients par défaut
+
+    document.querySelector("#devoirs .coef").value = 3;
+    document.querySelector("#interros .coef").value = 1;
+
+    document.getElementById("resultat").style.display = "none";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+</script>
+
+</body>
+</html>
